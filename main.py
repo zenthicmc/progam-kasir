@@ -1,8 +1,46 @@
 import sqlite3
 import datetime
+import os
 
 conn = sqlite3.connect('pos.db')
 cursor = conn.cursor()
+
+
+def menuUtama():
+    print("===============================")
+    print("Program Kasir Sederhana")
+    print("===============================")
+    print("[1] Mulai program kasir")
+    print("[2] Lihat stok barang")
+    print("\n[0] Keluar Program")
+    print("===============================")
+    pilihan = int(input("Pilihan >> "))
+
+    if(pilihan==1):
+        keranjangBelanjaMenu()
+    elif(pilihan==2):
+        lihatBarang()
+    elif(pilihan==0):
+        quit()
+    else:
+        print("Invalid input menu!")
+
+
+def lihatBarang():
+  print("=================================================================")
+  print("\t\t\tLihat Barang")
+  print("=================================================================")
+
+  sql = """SELECT * FROM barang"""
+  cursor.execute(sql)
+  listbarang = cursor.fetchall()
+
+  print("{:<3} {:<25} {:<12} {:<5}".format('ID','Nama barang','Stok','Harga'))
+  for barang in listbarang:
+      print("{:<3} {:<25} {:<12} {:<5}".format(barang[0],barang[1],barang[2],barang[3]))
+  print("=================================================================")
+  pause()
+
 
 def keranjangBelanjaMenu():
   id_barang = int(input("Masukkan ID barang: "))
@@ -66,6 +104,7 @@ def cetakStruk():
   total_kembali = total_tunai - total_harga_belanja
   print(" Kembali: Rp",total_kembali)
   print("=================================")
+  pause()
   clearKeranjang()
 
 
@@ -80,4 +119,14 @@ def updateStok(id_barang,jumlah_baru):
     cursor.execute(sql, (jumlah_baru,id_barang,))
     conn.commit()
 
-keranjangBelanjaMenu()
+def pause():
+  pilihan = input("Ingin kembali ke menu utama? (Y/N) ")
+  if(pilihan=="Y" or pilihan=="y"):
+    os.system("cls")
+    menuUtama()
+  elif(pilihan=="N" or pilihan=="n"):
+    quit()
+
+
+#Start program
+menuUtama()
